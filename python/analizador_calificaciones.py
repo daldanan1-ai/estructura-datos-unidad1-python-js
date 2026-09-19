@@ -46,10 +46,57 @@ def main():
     # Calculo del promedio
     promedio = suma / n
 
+    # Copia y ordenamiento para calcular mediana y moda
+    ordenadas = calificaciones.copy()
+    ordenadas.sort()
+
+    # Calculo de la mediana
+    mitad = n // 2
+    if n % 2 == 0:
+        mediana = (ordenadas[mitad - 1] + ordenadas[mitad]) / 2
+    else:
+        mediana = ordenadas[mitad]
+
+    # Calculo de la moda
+    moda = ordenadas[0]
+    max_frec = 0
+    for i in range(n):
+        frec = 0
+        for j in range(n):
+            if ordenadas[j] == ordenadas[i]:
+                frec += 1
+        if frec > max_frec:
+            max_frec = frec
+            moda = ordenadas[i]
+
+    # Histograma de frecuencias
+    rangos = [0] * 5  # 0-20, 21-40, 41-60, 61-80, 81-100
+    for cal in calificaciones:
+        if cal <= 20:
+            rangos[0] += 1
+        elif cal <= 40:
+            rangos[1] += 1
+        elif cal <= 60:
+            rangos[2] += 1
+        elif cal <= 80:
+            rangos[3] += 1
+        else:
+            rangos[4] += 1
+
     print("\n--- RESULTADOS ESTADISTICOS ---")
     print(f"Promedio: {promedio:.2f}")
+    print(f"Mediana: {mediana:.2f}")
+    print(f"Moda: {moda:.2f}")
     print(f"Aprobados: {aprobados} ({aprobados / n * 100:.1f}%)")
     print(f"Reprobados: {reprobados} ({reprobados / n * 100:.1f}%)")
+
+    print("\n--- HISTOGRAMA ---")
+    etiquetas = ["0-20: ", "21-40: ", "41-60: ", "61-80: ", "81-100: "]
+    for i in range(5):
+        print(etiquetas[i], end="\t")
+        for _ in range(rangos[i]):
+            print("*", end="")
+        print(f" ({rangos[i]})")
 
 
 if __name__ == "__main__":

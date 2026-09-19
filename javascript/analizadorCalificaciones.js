@@ -72,10 +72,54 @@ async function main() {
   // Calculo del promedio
   const promedio = suma / n;
 
+  // Copia y ordenamiento para calcular mediana y moda
+  // (sort necesita comparador: por defecto ordena como texto)
+  const ordenadas = [...calificaciones].sort((a, b) => a - b);
+
+  // Calculo de la mediana
+  const mitad = Math.floor(n / 2);
+  const mediana = (n % 2 === 0)
+    ? (ordenadas[mitad - 1] + ordenadas[mitad]) / 2
+    : ordenadas[mitad];
+
+  // Calculo de la moda
+  let moda = ordenadas[0];
+  let maxFrec = 0;
+  for (let i = 0; i < n; i++) {
+    let frec = 0;
+    for (let j = 0; j < n; j++) {
+      if (ordenadas[j] === ordenadas[i]) frec++;
+    }
+    if (frec > maxFrec) {
+      maxFrec = frec;
+      moda = ordenadas[i];
+    }
+  }
+
+  // Histograma de frecuencias
+  const rangos = new Array(5).fill(0); // 0-20, 21-40, 41-60, 61-80, 81-100
+  for (const cal of calificaciones) {
+    if (cal <= 20) rangos[0]++;
+    else if (cal <= 40) rangos[1]++;
+    else if (cal <= 60) rangos[2]++;
+    else if (cal <= 80) rangos[3]++;
+    else rangos[4]++;
+  }
+
   console.log("\n--- RESULTADOS ESTADISTICOS ---");
   console.log(`Promedio: ${promedio.toFixed(2)}`);
+  console.log(`Mediana: ${mediana.toFixed(2)}`);
+  console.log(`Moda: ${moda.toFixed(2)}`);
   console.log(`Aprobados: ${aprobados} (${(aprobados / n * 100).toFixed(1)}%)`);
   console.log(`Reprobados: ${reprobados} (${(reprobados / n * 100).toFixed(1)}%)`);
+
+  console.log("\n--- HISTOGRAMA ---");
+  const etiquetas = ["0-20: ", "21-40: ", "41-60: ", "61-80: ", "81-100: "];
+  for (let i = 0; i < 5; i++) {
+    process.stdout.write(etiquetas[i] + "\t");
+    for (let j = 0; j < rangos[i]; j++) process.stdout.write("*");
+    console.log(` (${rangos[i]})`);
+  }
 }
 
 main()
